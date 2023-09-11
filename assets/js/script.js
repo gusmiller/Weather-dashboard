@@ -14,8 +14,9 @@ $(document).ready(function () {
 	const bingApi = "AiWJmhnxfhdTKeo19xy2NrVRNuGJlN9DiTfsDFV0AbdyHZHjWLv8ru9SloAmYPbk";
 
 	var tasksRegistry = []; // Declare empty array - this will hold the tasks
-	var latitude = ""
-	var longitude = ""
+	var latitude = "";
+	var longitude = "";
+	var selectedCity = "";
 
 	/**
 	 * This function will connect to the API, request information and process if everything is ok.
@@ -23,7 +24,9 @@ $(document).ready(function () {
 	 * API URL: https://api.openweathermap.org/data/2.5/forecast?lat={lat}&lon={lon}&appid=313db44690e1bc1d83bcbf0de3ce1813
 	 */
 	function searchInformation() {
-		var selectedCity = $("#searchWeather").val();
+
+		// Retrieve the city selected by the user.
+		selectedCity = $("#searchWeather").val();
 		const geocodingEndpoint = `https://dev.virtualearth.net/REST/v1/Locations?q=${selectedCity}&key=${bingApi}`;
 
 		// Make an HTTP GET fetch request to the API
@@ -35,7 +38,8 @@ $(document).ready(function () {
 				latitude = firstLocation.point.coordinates[0];
 				longitude = firstLocation.point.coordinates[1];
 
-				getCoordinates(selectedCity);
+				currentWeatherCity(); // call the current weather information
+				getForecastData(); // Call the forecast weather
 			})
 			.catch((error) => {
 				console.error("Error:", error);
@@ -43,42 +47,51 @@ $(document).ready(function () {
 			});
 	}
 
-	// Create a function to retrieve coordinates
+	/**
+	 * This function will retrieve the current weather in the city selected. We could get 
+	 * the information from the list as well.
+	 */
+	function currentWeatherCity() {
+		const currentWeather = `https://api.openweathermap.org/data/2.5/weather?lat=${latitude}&lon=${longitude}&appid=${openWeatherAPI}`;
+
+		fetch(currentWeather)
+			.then(response => response.json())
+			.then(data => {
+
+				// Format date to a simple and short date.
+				// https://day.js.org/docs/en/display/format
+				$("#cityCurrentWeather").text(selectedCity + " (" + dayjs().format("DD/MM/YYYY") + ")");
+
+				$("#temperatureHeader").text(data.main.temp);
+				$("#windHeader").text(data.wind.speed);
+				$("#humidityHeader").text(data.main.humidity);
+
+			})
+			.catch(error => {
+				console.error('Error:', error);
+			})
+	}
+
 	/**
 	 * This function will retrieve the coordinates for the selected city using Bing Virtual Earth API for 
 	 * Developers. If the process is correct then It will return the coordinates (latitude/longitude)
 	 * @param {*} city 
 	 */
-	function getCoordinates(city) {
+	function getForecastData(city) {
+		const forecasWeather = `https://api.openweathermap.org/data/2.5/forecast?lat=${latitude}&lon=${longitude}&appid=${openWeatherAPI}`;
 		const openWeatherURL = `https://api.openweathermap.org/data/2.5/forecast?lat=${latitude}&lon=${longitude}&appid=${openWeatherAPI}`;
 		const forecastEndpoint = `https://api.openweathermap.org/data/2.5/forecast?q=${city}&appid=${openWeatherAPI}&units=metric`;
-		//const forecastEndpoint = `https://pro.openweathermap.org/data/2.5/forecast/hourly?lat=${latitude}&lon=${longitude}&appid=${openWeatherAPI}`;
 
-		fetch(forecastEndpoint)
+		fetch(forecasWeather)
 			.then(response => response.json())
 			.then(data => {
 				// Extract and process the forecast data
-				const cityWeather = data.list[0];
-				const forecasts = data.list
+				const forecast = data.list;
 
-				$("#cityCurrentWeather").text(city + " (" + dayjs().format("DD/MM/YYYY") + ")");
-
-				$("#temperatreHeader").text(cityWeather.main.temp);
-				$("#windHeader").text(cityWeather.wind.speed);
-				$("#humidityHeader").text(cityWeather.main.humidity);
-
-				for (var i=0; i == 5; i++){
-
-				}
-
-				forecasts.forEach(forecast => {
+				forecast.foreach(forecast => {
 					const date = forecast.dt_txt;
-					const temperature = forecast.main.temp;
-					const humidity = forecast.main.humidity;
-					const wind = forecast.wind.speed;
-
-					console.log(`Date: ${date}, Temperature: ${temperature}°C, Description: ${weatherDescription}`);
-				});
+					console.log(dayjs(forecasts.dt_txt).format("DD/MM/YYYY"), forecasts.main.temp, forecasts.main.humidity);
+				})
 			})
 			.catch(error => {
 				console.error('Error:', error);
@@ -138,8 +151,8 @@ $(document).ready(function () {
 	}
 
 	/**
-	 * This function will retrieve from the Local Storage the tasks assigned to the current Work Day Scheduler.
-	 * The function returns a populates -or empty, array that may contain the tasks stored.
+	 * This function will retrieve from the Local Storage the cities and searches history for the current Weather Dashboard
+	 * We create a default array when application runs for the first time.
 	 */
 	function retrieveData() {
 		// Retrieve from local storage the Schedule Tasks and convert into object. We are
@@ -150,11 +163,19 @@ $(document).ready(function () {
 			localStorage.getItem("weatherSearch")
 		);
 
-		if (autoComplete !== null) {
-			$("#searchWeather").autocomplete({
-				source: autoComplete,
-			});
+		// Validate whether autocomplete array is null - add default list when empty 
+		if (autoComplete === null) {
+			autoComplete = ['Toronto', 'Montreal', 'Vancouver', 'Calgary', 'Edmonton', 'Ottawa', 'Gatineau',
+				'Quebec', 'Winnipeg', 'Hamilton', 'Kitchener', 'Cambridge', 'Waterloo'];
+			// https://developer.mozilla.org/en-US/docs/Web/API/Storage/setItem
+			// https://www.w3schools.com/Js/js_json_stringify.asp
+			localStorage.setItem("weatherSearch", JSON.stringify(autoComplete));
 		}
+
+		// Set up the autocomplete list into element
+		$("#searchWeather").autocomplete({
+			source: autoComplete,
+		});
 	}
 
 	/**
@@ -163,18 +184,8 @@ $(document).ready(function () {
 	 * it would not add; as the next row. Leave for later.
 	 */
 	function init() {
-		// Using DayJs library we display the date on hero section
-		// https://day.js.org/docs/en/display/format
-		$("#currentDay").text(dayjs().format("MMMM DD, YYYY"));
-
-		//var skillNames = ['Toronto','Ottawa','Gatineau'];
-		// Window: localStorage property - data has no expiration time
-		// https://developer.mozilla.org/en-US/docs/Web/API/Storage/setItem
-		// https://www.w3schools.com/Js/js_json_stringify.asp
-		//localStorage.setItem("weatherSearch",JSON.stringify(skillNames));
 
 		retrieveData(); // This will call the function that retrieves data from LocalStorage
-
 		$("#searchcity").on("click", searchInformation);
 	}
 

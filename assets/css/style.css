@@ -9,13 +9,10 @@
  * Date: September 2023
  */
 
- :root {
+:root {
 	--wd-top-headings-height: 60px;
 	--wd-bottom-headings-height: 50px;
-	--wd-workarea-main-height: calc(
-		100vh - var(--wd-top-headings-height) -
-			var(--wd-bottom-headings-height)
-	);
+	--wd-workarea-main-height: calc(100vh - var(--wd-top-headings-height) - var(--wd-bottom-headings-height));
 }
 
 body {
@@ -89,6 +86,7 @@ footer {
 .button-search-color {
 	background-color: #8bb9ff;
 }
+
 .button-search-color:hover {
 	background-color: #0d6efd;
 	color: white;
@@ -98,4 +96,10 @@ footer {
 	text-align: center;
 	font-size: 12px;
 	color: rgb(173, 171, 171);
+}
+
+#temperatureHeader,
+#windHeader,
+#humidityHeader {
+	color: #0d6efd;
 }

@@ -27,6 +27,7 @@
 
     <!-- Page Content-->
     <main class="container-fluid">
+        <div id="alertError" class="alert alert-danger" role="alert" hidden></div>
         <section class="coverscreen">
             <div class="row workarea">
                 <aside class="col-3 search-region">
@@ -55,7 +56,7 @@
 
                                 <div class="card-body">
                                     <p>
-                                        Temperature: <strong><span id="temperatreHeader"></span></strong><br />
+                                        Temperature: <strong><span id="temperatureHeader"></span></strong><br />
                                         Wind Speed : <strong><span id="windHeader"></span></strong> <br />
                                         Humidity   : <strong><span id="humidityHeader"></span></strong> 
                                     </p>
@@ -64,80 +65,27 @@
                         </section>
                         <section class="history-weather">
 
-                            <article class="row">
+                            <article id="weatherCards" class="row">
                                 <div class="col-12 my-4">
                                     <h2>5-Day Forecast</h2>
                                 </div>
-                                <div class="col-2">
+
+                                <!-- This section is the template of the process. This section will be cloned and configured for each hour -->
+                                <div id="weatherTemplate" class="col-2" hidden>
                                     <div class="card forecast-cards">
                                         <div class="container">
-                                            <h5 class="mb-2">09/10/2023</h5>
+                                            <h5 class="mb-2">{date}</h5>
                                             <i class="fas fa-sun text-warning mb-3"></i>
-
                                             <p>
-                                                <span>Temperature</span><br />
-                                                <span>wind</span><br />
-                                                <span>Humidity</span>
+                                                Temperature: <strong><span id="temperatureForecast">{temp}</span></strong><br />
+                                                Wind Speed : <strong><span id="windForecast">{wind}</span></strong> <br />
+                                                Humidity   : <strong><span id="humidityForecast">{humidity}</span></strong> 
                                             </p>
                                         </div>
                                     </div>
                                 </div>
-                                <div class="col-2">
-                                    <div class="card forecast-cards">
-                                        <div class="container">
-                                            <h5 class="mb-2">09/10/2023</h4>
-                                            <i class="fas fa-sun text-warning mb-3"></i>
+                                <!-- End og the the template section -->
 
-                                            <p>
-                                                <span>Temperature</span><br />
-                                                <span>wind</span><br />
-                                                <span>Humidity</span>
-                                            </p>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-2">
-                                    <div class="card forecast-cards">
-                                        <div class="container">
-                                            <h5 class="mb-2">09/10/2023</h4>
-                                            <i class="fas fa-sun text-warning mb-3"></i>
-
-                                            <p>
-                                                <span>Temperature</span><br />
-                                                <span>wind</span><br />
-                                                <span>Humidity</span>
-                                            </p>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-2">
-                                    <div class="card forecast-cards">
-                                        <div class="container">
-                                            <h5 class="mb-2">09/10/2023</h4>
-                                            <i class="fas fa-sun text-warning mb-3"></i>
-
-                                            <p>
-                                                <span>Temperature</span><br />
-                                                <span>wind</span><br />
-                                                <span>Humidity</span>
-                                            </p>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-2">
-                                    <div class="card forecast-cards">
-                                        <div class="container">
-                                            <h5 class="mb-2">09/10/2023</h4>
-                                            <i class="fas fa-sun text-warning mb-3"></i>
-
-                                            <p>
-                                                <span>Temperature</span><br />
-                                                <span>wind</span><br />
-                                                <span>Humidity</span>
-                                            </p>
-                                        </div>
-                                    </div>
-                                </div>
                             </article>
                         </section>
                     </div>
