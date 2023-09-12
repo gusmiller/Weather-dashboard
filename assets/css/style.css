@@ -29,6 +29,7 @@ footer {
 	color: #fff;
 }
 
+/* Define working areas */
 .topheader {
 	height: var(--wd-top-headings-height);
 }
@@ -63,10 +64,17 @@ footer {
 	height: 25%;
 }
 
+#temperatureHeader,
+#windHeader,
+#humidityHeader {
+	color: #0d6efd;
+}
+
 .history-weather {
 	height: 75%;
 }
 
+/* Weather template and cards */
 .col-2 {
 	width: 20% !important;
 }
@@ -92,14 +100,6 @@ footer {
 	color: white;
 }
 
-.version {
-	text-align: center;
-	font-size: 12px;
-	color: rgb(173, 171, 171);
-}
-
-#temperatureHeader,
-#windHeader,
-#humidityHeader {
-	color: #0d6efd;
+.highlight {
+	font-weight: 600;
 }

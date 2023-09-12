@@ -13,10 +13,15 @@ $(document).ready(function () {
 	const openWeatherAPI = "bbc3d2f0a62f5953d89a98a20be48141";
 	const bingApi = "AiWJmhnxfhdTKeo19xy2NrVRNuGJlN9DiTfsDFV0AbdyHZHjWLv8ru9SloAmYPbk";
 
+	var newForecastBlock = $("#weatherTemplate").clone(); // Initial mechanism to create DOM - not successful
+	newForecastBlock.removeAttr("hidden");
+
 	var tasksRegistry = []; // Declare empty array - this will hold the tasks
 	var latitude = "";
 	var longitude = "";
 	var selectedCity = "";
+	var min = 1;
+	var max = 100;
 
 	/**
 	 * This function will connect to the API, request information and process if everything is ok.
@@ -24,6 +29,11 @@ $(document).ready(function () {
 	 * API URL: https://api.openweathermap.org/data/2.5/forecast?lat={lat}&lon={lon}&appid=313db44690e1bc1d83bcbf0de3ce1813
 	 */
 	function searchInformation() {
+
+		// Validate whether there are already forecast cards in the forecast section
+		if ($("#weatherCards").children().length > 2) {
+			$(".forecast").remove();
+		}
 
 		// Retrieve the city selected by the user.
 		selectedCity = $("#searchWeather").val();
@@ -43,6 +53,10 @@ $(document).ready(function () {
 			})
 			.catch((error) => {
 				console.error("Error:", error);
+
+				var errorBar = $("#errorBar")
+				errorBar.text("Virtual Earth return an error :" + error);
+				errorBar.removeAttr("hidden");
 				return false;
 			});
 	}
@@ -69,32 +83,73 @@ $(document).ready(function () {
 			})
 			.catch(error => {
 				console.error('Error:', error);
+
+				var errorBar = $("#errorBar")
+				errorBar.text("Open Weather map return an error :" + error);
+				errorBar.removeAttr("hidden");
 			})
 	}
 
 	/**
 	 * This function will retrieve the coordinates for the selected city using Bing Virtual Earth API for 
 	 * Developers. If the process is correct then It will return the coordinates (latitude/longitude)
-	 * @param {*} city 
 	 */
-	function getForecastData(city) {
-		const forecasWeather = `https://api.openweathermap.org/data/2.5/forecast?lat=${latitude}&lon=${longitude}&appid=${openWeatherAPI}`;
-		const openWeatherURL = `https://api.openweathermap.org/data/2.5/forecast?lat=${latitude}&lon=${longitude}&appid=${openWeatherAPI}`;
-		const forecastEndpoint = `https://api.openweathermap.org/data/2.5/forecast?q=${city}&appid=${openWeatherAPI}&units=metric`;
+	function getForecastData() {
+		const forecastWeather = `https://api.openweathermap.org/data/2.5/forecast?lat=${latitude}&lon=${longitude}&appid=${openWeatherAPI}`;
+		var currentDate = dayjs().format("DD/MM/YYYY");
+		var countForecast = 0;
 
-		fetch(forecasWeather)
+		fetch(forecastWeather)
 			.then(response => response.json())
 			.then(data => {
-				// Extract and process the forecast data
-				const forecast = data.list;
+				// Retrieve the forecast list into an array. 
+				const forecasts = data.list;
 
-				forecast.foreach(forecast => {
-					const date = forecast.dt_txt;
-					console.log(dayjs(forecasts.dt_txt).format("DD/MM/YYYY"), forecasts.main.temp, forecasts.main.humidity);
-				})
+				// Ref:JQuery - method is designed to make DOM looping constructs concise and less error-prone
+				// https://api.jquery.com/each/
+				forecasts.forEach(forecast => {
+
+					// Format date to a simple and short date. This method is used several times here
+					// https://day.js.org/docs/en/display/format
+					var loopDate = dayjs(forecast.dt_txt).format("DD/MM/YYYY");
+
+					if (currentDate != loopDate && countForecast <= 4) {
+						currentDate = dayjs(forecast.dt_txt).format("DD/MM/YYYY");
+						countForecast++
+
+						// Generate a random number within the range			  
+						var randomNum = Math.floor(Math.random() * (max - min + 1)) + min;
+
+						// Once we have completed compiling information that will be applied the new element we
+						// format the Element.
+						newForecastBlock.attr("id", "forecast" + randomNum); // Change id to unique
+						newForecastBlock.addClass("forecast");
+						newForecastBlock.find(".mb-2").text(currentDate);
+						newForecastBlock.find("#tempFor").text(forecast.main.temp);
+						newForecastBlock.find("#windFor").text(forecast.wind.speed);
+						newForecastBlock.find("#humidFor").text(forecast.main.humidity);
+
+						// Creates a clone of a response object, identical in every way, but stored in a different variable
+						// https://developer.mozilla.org/en-US/docs/Web/API/Response/clone
+						var insertElement = newForecastBlock.clone(); // Completed new Time Block now we clone it
+						$("#weatherCards").append(insertElement); // Finally we insert new cloned
+
+						console.log(`Date: ${dayjs(forecast.dt_txt).format("DD/MM/YYYY")}, Temperature ${forecast.main.temp}, Humidity ${forecast.main.humidity}`);
+					}
+
+				});
+
+				// This removes the element from the DOM.
+				// https://developer.mozilla.org/en-US/docs/Web/API/Element/remove
+				$("#weatherTemplate").remove();
+
 			})
 			.catch(error => {
 				console.error('Error:', error);
+
+				var errorBar = $("#errorBar")
+				errorBar.text("Open Weather map return an error :" + error);
+				errorBar.removeAttr("hidden");
 			});
 
 	}
@@ -187,16 +242,7 @@ $(document).ready(function () {
 
 		retrieveData(); // This will call the function that retrieves data from LocalStorage
 		$("#searchcity").on("click", searchInformation);
-	}
 
-	/**
-	 * This function receives the hour being processed, then adds a leading zero and returns the results. This could
-	 * have been implemented in the calling function, but we want to demonstrate that we can use out-side resources.
-	 * @param {*} num
-	 * @returns
-	 */
-	function addLeadingZero(num) {
-		return num < 10 ? "0" + num : num;
 	}
 
 	init();

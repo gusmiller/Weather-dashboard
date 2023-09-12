@@ -13,7 +13,7 @@
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.1/css/all.css"
         integrity="sha384-50oBUHEmvpQ+1lW4y57PTFmhCaXp0ML5d60M1M7uH2+nqUivzIebhndOJK28anvf" crossorigin="anonymous" />
     <!-- jQuery UI <link> tag -->
-    <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+    <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css" />
     <link rel="stylesheet" href="./assets/css/style.css" />
 </head>
 
@@ -27,7 +27,12 @@
 
     <!-- Page Content-->
     <main class="container-fluid">
-        <div id="alertError" class="alert alert-danger" role="alert" hidden></div>
+        <div id="errorPosition">
+            <div id="errorBar" class="alert alert-danger alert-dismissible fade show" role="alert" hidden>
+                Something went wrong with the API.
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        </div>
         <section class="coverscreen">
             <div class="row workarea">
                 <aside class="col-3 search-region">
@@ -39,12 +44,13 @@
                             <input id="searchWeather" type="text" class="form-control" aria-label="Search"
                                 placeholder="Enter City name" />
                         </div>
-                        <button id="searchcity" type="button" class="btn button-search-color">Search</button>
+                        <button id="searchcity" type="button" class="btn button-search-color">
+                            Search
+                        </button>
                         <hr />
                     </div>
                 </aside>
                 <aside class="col-9">
-
                     <div class="data-weather">
                         <section class="current-weather mb-3">
                             <div class="card">
@@ -52,44 +58,43 @@
                                     <h3 id="cityCurrentWeather">
                                         <i class="fas fa-sun text-warning"></i>
                                     </h3>
-                                </div><!-- City weather Header -->
+                                </div>
+                                <!-- City weather Header -->
 
                                 <div class="card-body">
-                                    <p>
-                                        Temperature: <strong><span id="temperatureHeader"></span></strong><br />
-                                        Wind Speed : <strong><span id="windHeader"></span></strong> <br />
-                                        Humidity   : <strong><span id="humidityHeader"></span></strong> 
+                                    <p>Temperature: <strong><span id="temperatureHeader"></span></strong><br />
+                                        Wind Speed : <strong><span id="windHeader"></span></strong><br />
+                                        Humidity : <strong><span id="humidityHeader"></span></strong>
                                     </p>
-                                </div><!-- City weather details -->
+                                </div>
+                                <!-- City weather details -->
                             </div>
                         </section>
                         <section class="history-weather">
-
                             <article id="weatherCards" class="row">
                                 <div class="col-12 my-4">
-                                    <h2>5-Day Forecast</h2>
+                                    <h2>
+                                        5-Day Forecast
+                                    </h2>
                                 </div>
 
                                 <!-- This section is the template of the process. This section will be cloned and configured for each hour -->
                                 <div id="weatherTemplate" class="col-2" hidden>
                                     <div class="card forecast-cards">
                                         <div class="container">
-                                            <h5 class="mb-2">{date}</h5>
+                                            <h5 class="mb-2">test</h5>
                                             <i class="fas fa-sun text-warning mb-3"></i>
-                                            <p>
-                                                Temperature: <strong><span id="temperatureForecast">{temp}</span></strong><br />
-                                                Wind Speed : <strong><span id="windForecast">{wind}</span></strong> <br />
-                                                Humidity   : <strong><span id="humidityForecast">{humidity}</span></strong> 
-                                            </p>
+                                            <div class="mt-3">Temp: <span id="tempFor" class="highlight"></span> </div>
+                                            <div>Wind : <span id="windFor" class="highlight"></span> </div>
+                                            <div>Humidity: <span id="humidFor" class="highlight"></span> </div>
                                         </div>
                                     </div>
                                 </div>
-                                <!-- End og the the template section -->
+                                <!-- End of the the template section -->
 
                             </article>
                         </section>
                     </div>
-
                 </aside>
             </div>
         </section>
@@ -98,7 +103,7 @@
     <!-- Footer-->
     <footer class="py-3 bg-gradient footer">
         <p class="text-center text-white">
-            Copyright &copy; Gustavo Miller 2023
+            Copyright &copy; Gustavo Miller 2023 v002
         </p>
     </footer>
 
