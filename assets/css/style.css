@@ -9,13 +9,10 @@
  * Date: September 2023
  */
 
- :root {
+:root {
 	--wd-top-headings-height: 60px;
 	--wd-bottom-headings-height: 50px;
-	--wd-workarea-main-height: calc(
-		100vh - var(--wd-top-headings-height) -
-			var(--wd-bottom-headings-height)
-	);
+	--wd-workarea-main-height: calc(100vh - var(--wd-top-headings-height) - var(--wd-bottom-headings-height));
 }
 
 body {
@@ -32,6 +29,7 @@ footer {
 	color: #fff;
 }
 
+/* Define working areas */
 .topheader {
 	height: var(--wd-top-headings-height);
 }
@@ -66,10 +64,17 @@ footer {
 	height: 25%;
 }
 
+#temperatureHeader,
+#windHeader,
+#humidityHeader {
+	color: #0d6efd;
+}
+
 .history-weather {
 	height: 75%;
 }
 
+/* Weather template and cards */
 .col-2 {
 	width: 20% !important;
 }
@@ -89,13 +94,12 @@ footer {
 .button-search-color {
 	background-color: #8bb9ff;
 }
+
 .button-search-color:hover {
 	background-color: #0d6efd;
 	color: white;
 }
 
-.version {
-	text-align: center;
-	font-size: 12px;
-	color: rgb(173, 171, 171);
+.highlight {
+	font-weight: 600;
 }
