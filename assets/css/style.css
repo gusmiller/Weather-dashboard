@@ -17,7 +17,8 @@
 	--searchbutton: #8bb9ff;
 	--searchbutton-hover: #0d6efd;
 	--cachedcity: #ae9ecc;
-	--cachedcity-hover: #835ec7;;
+	--cachedcity-hover: #835ec7;
+	--clouds-gray: #6c757d;
 }
 
 body {
@@ -121,4 +122,7 @@ footer {
 .cachedcities {
 	display: flex;
       flex-direction: column;
+}
+.text-cloudy{
+	text: var(--clouds-gray);
 }

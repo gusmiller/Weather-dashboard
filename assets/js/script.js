@@ -148,18 +148,18 @@ $(document).ready(function () {
 
 						// Retrieve the element that holds the weather icon
 						var iconchange = newForecastBlock.find("#iconview")
-						iconchange.removeClass("fa-sun");
+						iconchange.removeClass("fa-sun text-warning");
 
 						// Validate the type of weather and insert the proper icon
 						if (forecast.weather[0].description == "overcast clouds" || forecast.weather[0].description == "few clouds" ||
 							forecast.weather[0].description == "broken clouds") {
-								iconchange.addClass("fa-cloud-sun");
+								iconchange.addClass("fa-cloud-sun text-cloudy");								
 						} else if (forecast.weather[0].description == "clear sky") {
-							iconchange.addClass("fa-sun");
+							iconchange.addClass("fa-sun text-warning");
 						} else if (forecast.weather[0].description == "clear sky") {
-							iconchange.addClass("fa-cloud-rain");
+							iconchange.addClass("fa-cloud-rain text-cloudy");
 						} else {
-							iconchange.addClass("fa-sun");
+							iconchange.addClass("fa-sun text-warning");
 						}
 
 						// Creates a clone of a response object, identical in every way, but stored in a different variable
