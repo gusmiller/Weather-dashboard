@@ -29,7 +29,7 @@ $(document).ready(function () {
 	/**
 	 * This function will connect to the API, request information and process if everything is ok.
 	 * Personal API: 313db44690e1bc1d83bcbf0de3ce1813
-	 * API URL: https://api.openweathermap.org/data/2.5/forecast?lat={lat}&lon={lon}&appid=313db44690e1bc1d83bcbf0de3ce1813
+	 * API URL: https://api.openweathermap.org/data/2.5/forecast?lat={lat}&lon={lon}&units=metric&appid=313db44690e1bc1d83bcbf0de3ce1813
 	 */
 	function retrieveWeather() {
 
@@ -40,6 +40,10 @@ $(document).ready(function () {
 
 		// Retrieve the city selected by the user.
 		selectedCity = $("#searchWeather").val();
+		if (selectedCity == "") {
+			displayErrorMessage("Invalid selected city! you need to enter a city", "Loading process!"); // Display error message
+			return false;
+		}
 
 		// We are using template literals to build strings (backtick + ${variable}
 		// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Template_literals
@@ -48,7 +52,9 @@ $(document).ready(function () {
 		// Make an HTTP GET fetch request to the API
 		// https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API/Using_Fetch
 		fetch(geocodingEndpoint)
-			.then((response) => response.json())
+			.then(function (response) {
+				return response.json();
+			})
 			.then((data) => {
 				// Extract the coordinates from the response
 				const firstLocation = data.resourceSets[0].resources[0];
@@ -72,7 +78,7 @@ $(document).ready(function () {
 	 * the information from the list as well.
 	 */
 	function retrieveCurrentWeather() {
-		const currentWeather = `https://api.openweathermap.org/data/2.5/weather?lat=${latitude}&lon=${longitude}&appid=${openWeatherAPI}`;
+		const currentWeather = `https://api.openweathermap.org/data/2.5/weather?lat=${latitude}&lon=${longitude}&units=metric&appid=${openWeatherAPI}`;
 
 		fetch(currentWeather)
 			.then(response => response.json())
@@ -90,11 +96,9 @@ $(document).ready(function () {
 
 			})
 			.catch(error => {
-				console.error('Error:', error);
-
-				var errorBar = $("#errorBar")
-				errorBar.text("Open Weather map return an error :" + error);
-				errorBar.removeAttr("hidden");
+				$("#searchWeather").val(""); // Clear city entered
+				displayErrorMessage(error, "Open Weather Map"); // Display error message
+				return false;
 			})
 	}
 
@@ -103,7 +107,10 @@ $(document).ready(function () {
 	 * Developers. If the process is correct then It will return the coordinates (latitude/longitude)
 	 */
 	function retrieveForecastWeather() {
-		const forecastWeather = `https://api.openweathermap.org/data/2.5/forecast?lat=${latitude}&lon=${longitude}&appid=${openWeatherAPI}`;
+		const forecastWeather = `https://api.openweathermap.org/data/2.5/forecast?lat=${latitude}&lon=${longitude}&units=metric&appid=${openWeatherAPI}`;
+
+		console.log(forecastWeather);
+
 		var currentDate = dayjs().format("DD/MM/YYYY");
 		var countForecast = 0;
 
@@ -121,6 +128,8 @@ $(document).ready(function () {
 					// https://day.js.org/docs/en/display/format
 					var loopDate = dayjs(forecast.dt_txt).format("DD/MM/YYYY");
 
+					// Make sure we are NOT showing information from the same day. The forecast is returned
+					// in 3 hours lapses. This means that we have multiple records for each day.
 					if (currentDate != loopDate && countForecast <= 4) {
 						currentDate = dayjs(forecast.dt_txt).format("DD/MM/YYYY");
 						countForecast++
@@ -137,14 +146,27 @@ $(document).ready(function () {
 						newForecastBlock.find("#windFor").text(forecast.wind.speed);
 						newForecastBlock.find("#humidFor").text(forecast.main.humidity);
 
+						// Retrieve the element that holds the weather icon
+						var iconchange = newForecastBlock.find("#iconview")
+						iconchange.removeClass("fa-sun");
+
+						// Validate the type of weather and insert the proper icon
+						if (forecast.weather[0].description == "overcast clouds" || forecast.weather[0].description == "few clouds" ||
+							forecast.weather[0].description == "broken clouds") {
+								iconchange.addClass("fa-cloud-sun");
+						} else if (forecast.weather[0].description == "clear sky") {
+							iconchange.addClass("fa-sun");
+						} else if (forecast.weather[0].description == "clear sky") {
+							iconchange.addClass("fa-cloud-rain");
+						} else {
+							iconchange.addClass("fa-sun");
+						}
+
 						// Creates a clone of a response object, identical in every way, but stored in a different variable
 						// https://developer.mozilla.org/en-US/docs/Web/API/Response/clone
 						var insertElement = newForecastBlock.clone(); // Completed new Time Block now we clone it
 						$("#weatherCards").append(insertElement); // Finally we insert new cloned
-
-						console.log(`Date: ${dayjs(forecast.dt_txt).format("DD/MM/YYYY")}, Temperature ${forecast.main.temp}, Humidity ${forecast.main.humidity}`);
 					}
-
 				});
 
 				// At this point we have already display all data including the forecast for selected city
@@ -157,12 +179,40 @@ $(document).ready(function () {
 
 			})
 			.catch(error => {
-				console.error('Error:', error);
-
-				var errorBar = $("#errorBar")
-				errorBar.text("Open Weather map return an error :" + error);
-				errorBar.removeAttr("hidden");
+				$("#searchWeather").val(""); // Clear city entered
+				displayErrorMessage(error, "Open Weather Map (Forecast)"); // Display error message
+				return false;
 			});
+	}
+
+	/**
+	 * This function will load the selected city weather. It will retrieve the id assigned to the button,
+	 * search for this item in the Local Story array and retrieve the coordinates for the city. Finally it 
+	 * will retrieve the weather.
+	 */
+	function retrieveCachedWeather() {
+
+		// Retrieve the id from the selected element (button); this is used to 
+		// find in the array for the corresponding array-record - from it we retrieve coordinates
+		var cachedid = this.id;
+
+		// Iterate through the cities array and search for the id		
+		for (i = 0; i <= citiesCached.length - 1; i++) {
+
+			// Validate the array element/attribute (id) - store in global variables
+			if ("cached" + citiesCached[i].id == cachedid) {
+				latitude = citiesCached[i].latitude; // Retrieve City latitude
+				longitude = citiesCached[i].longitude; // Retrieve City longitude
+				selectedCity = citiesCached[i].city; // Retrieve City into global variable
+
+				$("#searchWeather").val(selectedCity); // Display selected city
+
+				// Once we have retrieved the required information we just bring the 
+				// current weather and the 6 days forecast.
+				retrieveWeather();
+				return false;
+			}
+		}
 	}
 
 	/**
@@ -205,6 +255,36 @@ $(document).ready(function () {
 			localStorage.setItem("cachedWeather", JSON.stringify(citiesCached));
 
 		}
+
+		insertButton(selectedCity, cityId);
+	}
+
+	// This function will insert the button dynamically. I am using a different method when
+	// creating new element. Instead of cloning I am creating the element using JQuery; assigning
+	// different attributes, classes and text, to finally add into DOM
+	// Object to create: <button id="searchcity" type="button" class="btn button-cached mb-2">Search</button>
+	function insertButton(c, i) {
+		// Create a new <button> element
+		var newButton = $("<button></button>");
+		var idString = "cached" + i;
+
+		// The forecast is built dynamically. Validate whether there are already forecast cards in the forecast section
+		if ($("#cachedData").children().length <= 8) {
+
+			// Validate the button has not been already created
+			if ($("#" + idString).length === 0) {
+
+				// Set new element attributes and content
+				newButton.attr("id", idString); // Assign a unique id
+				newButton.attr("type", "button"); // Add the type of element 
+				newButton.addClass("btn button-cached mb-2"); // Assign styling classes
+				newButton.text(c); // Insert the City Name
+
+				// Insert (append) the new element
+				$("#cachedData").append(newButton);
+			}
+		}
+
 	}
 
 	/**
@@ -260,7 +340,7 @@ $(document).ready(function () {
 		}
 
 		var messageLog = $("#errorString"); // Retrieve the error element object
-		messageLog.text(title + " return an error :" + value); // Configure alert error mesage
+		messageLog.text(title + " return an error :" + value); // Configure alert error message
 		//document.body.children[1].children[0].children.errorBar
 		messageLog.parent().removeAttr("hidden"); // Display element
 	}
@@ -293,6 +373,9 @@ $(document).ready(function () {
 				// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/push
 				citiesCached.push(oCacheCities[i]); // Add tasks into array
 
+				// Insert dynamic buttons for the cached cities
+				insertButton(oCacheCities[i].city, oCacheCities[i].id)
+
 			}
 
 		}
@@ -303,7 +386,7 @@ $(document).ready(function () {
 
 	/**
 	 * This function will load the current weather from the cached cities. It will load the
-	 * very first city cached.
+	 * very first city cached, setup local variables and interface and load the forecast information
 	 */
 	function setupCurrentCachedWeather() {
 
@@ -312,11 +395,12 @@ $(document).ready(function () {
 			// Retrieve from array the information stored in the Local Storage
 			latitude = citiesCached[0].latitude // Store City latitude
 			longitude = citiesCached[0].longitude // Store City longitude
-			selectedCity= citiesCached[0].city // Store City name
+			selectedCity = citiesCached[0].city // Store City name
+			$("#searchWeather").val(selectedCity); // Display selected city
 
 			// Once we have retrieved the required information we just bring the 
 			// current weather and the 6 days forecast.
-			retrieveWeather(); 
+			retrieveWeather();
 		}
 
 	}
@@ -339,7 +423,12 @@ $(document).ready(function () {
 		setupAutocomplete(); // Initialize Autocomplete Local Storage
 		setupCachedCities(); // Initialize Caches cites from Local Storage
 
+		// Assign an event to handle the search button request
 		$("#searchcity").on("click", retrieveWeather);
+
+		// Assign an event to ALL buttons added dynamically into the DOM. These buttons originally
+		// will NOT be there. To reset the array use the inspect to delete the LocalStorage
+		$(".button-cached").on("click", retrieveCachedWeather);
 
 	}
 
