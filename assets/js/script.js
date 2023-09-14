@@ -62,8 +62,7 @@ $(document).ready(function () {
 				longitude = firstLocation.point.coordinates[1];
 
 				retrieveCurrentWeather(); // call the current weather information
-				retrieveForecastWeather(); // Call the forecast weather
-
+				retrieveForecastWeather(); // Call the forecast weather	
 			})
 			.catch((error) => {
 
@@ -79,7 +78,6 @@ $(document).ready(function () {
 	 */
 	function retrieveCurrentWeather() {
 		const currentWeather = `https://api.openweathermap.org/data/2.5/weather?lat=${latitude}&lon=${longitude}&units=metric&appid=${openWeatherAPI}`;
-		console.log(currentWeather);
 
 		fetch(currentWeather)
 			.then(response => response.json())
@@ -158,7 +156,7 @@ $(document).ready(function () {
 
 						// Call shared function to perform the validation of the weather and apply the correct icon
 						changeWeatherIcon(forecast.weather[0], iconchange);
-						
+
 						// Creates a clone of a response object, identical in every way, but stored in a different variable
 						// https://developer.mozilla.org/en-US/docs/Web/API/Response/clone
 						var insertElement = newForecastBlock.clone(); // Completed new Time Block now we clone it
@@ -276,7 +274,14 @@ $(document).ready(function () {
 			localStorage.setItem("cachedWeather", JSON.stringify(citiesCached));
 
 		}
+
 		insertButton(selectedCity, cityId);
+
+		if (citiesCached.length > 0) {
+			$("#initialsection").attr("hidden", true);
+			$("#data-weather").removeAttr("hidden");
+		}
+
 	}
 
 	// This function will insert the button dynamically. I am using a different method when
@@ -394,6 +399,11 @@ $(document).ready(function () {
 
 				// Insert dynamic buttons for the cached cities
 				insertButton(oCacheCities[i].city, oCacheCities[i].id)
+			}
+
+			if (oCacheCities.length > 0) {
+				$("#initialsection").attr("hidden", true);
+				$("#data-weather").removeAttr("hidden");
 			}
 		}
 
