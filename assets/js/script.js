@@ -2,7 +2,7 @@
  * Carleton Bootcamp - 2023
  * Copyright 2023 Gustavo Miller
  * Licensed under MIT
- * Assignment - 05 Work Day Scheduler
+ * Assignment - 06 Weather Dashboard
  */
 
 /**
@@ -79,6 +79,7 @@ $(document).ready(function () {
 	 */
 	function retrieveCurrentWeather() {
 		const currentWeather = `https://api.openweathermap.org/data/2.5/weather?lat=${latitude}&lon=${longitude}&units=metric&appid=${openWeatherAPI}`;
+		console.log(currentWeather);
 
 		fetch(currentWeather)
 			.then(response => response.json())
@@ -91,6 +92,13 @@ $(document).ready(function () {
 				$("#temperatureHeader").text(data.main.temp);
 				$("#windHeader").text(data.wind.speed);
 				$("#humidityHeader").text(data.main.humidity);
+
+				// Instantiate an instance of the weather icon; this icon has to change dynamically 
+				// depending on the weather conditions
+				var iconchange = $("#weathericon");
+
+				// Call shared function to perform the validation of the weather and apply the correct icon
+				changeWeatherIcon(data.weather[0], iconchange);
 
 				cityId = data.id;
 
@@ -108,8 +116,6 @@ $(document).ready(function () {
 	 */
 	function retrieveForecastWeather() {
 		const forecastWeather = `https://api.openweathermap.org/data/2.5/forecast?lat=${latitude}&lon=${longitude}&units=metric&appid=${openWeatherAPI}`;
-
-		console.log(forecastWeather);
 
 		var currentDate = dayjs().format("DD/MM/YYYY");
 		var countForecast = 0;
@@ -146,22 +152,13 @@ $(document).ready(function () {
 						newForecastBlock.find("#windFor").text(forecast.wind.speed);
 						newForecastBlock.find("#humidFor").text(forecast.main.humidity);
 
-						// Retrieve the element that holds the weather icon
+						// Instantiate an instance of the weather icon; this icon has to change dynamically 
+						// depending on the weather conditions
 						var iconchange = newForecastBlock.find("#iconview")
-						iconchange.removeClass("fa-sun text-warning");
 
-						// Validate the type of weather and insert the proper icon
-						if (forecast.weather[0].description == "overcast clouds" || forecast.weather[0].description == "few clouds" ||
-							forecast.weather[0].description == "broken clouds") {
-								iconchange.addClass("fa-cloud-sun text-cloudy");								
-						} else if (forecast.weather[0].description == "clear sky") {
-							iconchange.addClass("fa-sun text-warning");
-						} else if (forecast.weather[0].description == "clear sky") {
-							iconchange.addClass("fa-cloud-rain text-cloudy");
-						} else {
-							iconchange.addClass("fa-sun text-warning");
-						}
-
+						// Call shared function to perform the validation of the weather and apply the correct icon
+						changeWeatherIcon(forecast.weather[0], iconchange);
+						
 						// Creates a clone of a response object, identical in every way, but stored in a different variable
 						// https://developer.mozilla.org/en-US/docs/Web/API/Response/clone
 						var insertElement = newForecastBlock.clone(); // Completed new Time Block now we clone it
@@ -183,6 +180,30 @@ $(document).ready(function () {
 				displayErrorMessage(error, "Open Weather Map (Forecast)"); // Display error message
 				return false;
 			});
+	}
+
+	/**
+	 * This function will validate the weather conditions and set the appropriate weather icon. It adds
+	 * not just the weather icon but also the color of the icon. For a sunny day it should be yellow and 
+	 * for other days a gloomy color.
+	 * @param {*} data - this is the object that contains the icon
+	 * @param {*} node - json node that contains information about the weather
+	 */
+	function changeWeatherIcon(data, node) {
+		node.removeClass("fa-sun text-warning");
+
+		// Validate the type of weather and insert the proper icon
+		if (data.description == "overcast clouds" || data.description == "few clouds" ||
+			data.description == "broken clouds") {
+			node.addClass("fa-cloud-sun text-cloudy"); // Insert classes
+		} else if (data.description == "clear sky") {
+			node.addClass("fa-sun text-warning"); // Insert classes
+		} else if (data.description == "clear sky") {
+			node.addClass("fa-cloud-rain text-cloudy"); // Insert classes
+		} else {
+			// Default icon; perhaps a description that escape my investigation.
+			node.addClass("fa-sun text-warning"); // Insert classes
+		}
 	}
 
 	/**
@@ -255,7 +276,6 @@ $(document).ready(function () {
 			localStorage.setItem("cachedWeather", JSON.stringify(citiesCached));
 
 		}
-
 		insertButton(selectedCity, cityId);
 	}
 
@@ -284,7 +304,6 @@ $(document).ready(function () {
 				$("#cachedData").append(newButton);
 			}
 		}
-
 	}
 
 	/**
@@ -375,9 +394,7 @@ $(document).ready(function () {
 
 				// Insert dynamic buttons for the cached cities
 				insertButton(oCacheCities[i].city, oCacheCities[i].id)
-
 			}
-
 		}
 
 		// Setup current Cached weather for the first city found
@@ -402,7 +419,6 @@ $(document).ready(function () {
 			// current weather and the 6 days forecast.
 			retrieveWeather();
 		}
-
 	}
 
 	// This function will implement the search city Autocomplete 
@@ -429,7 +445,6 @@ $(document).ready(function () {
 		// Assign an event to ALL buttons added dynamically into the DOM. These buttons originally
 		// will NOT be there. To reset the array use the inspect to delete the LocalStorage
 		$(".button-cached").on("click", retrieveCachedWeather);
-
 	}
 
 	init();
