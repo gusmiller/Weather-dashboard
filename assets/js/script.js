@@ -234,7 +234,7 @@ $(document).ready(function () {
 		var cachedid = this.id;
 
 		// Iterate through the cities array and search for the id		
-		for (i = 0; i <= citiesCached.length - 1; i++) {
+		for (i = 0; i <= citiesCached.length; i++) {
 
 			// Validate the array element/attribute (id) - store in global variables
 			if ("cached" + citiesCached[i].id == cachedid) {
