@@ -26,7 +26,7 @@
     </nav>
 
     <!-- Page Content-->
-    <main class="container-fluid">
+    <main class="container-fluid content">
         <div id="errorPosition">
             <div id="errorBar" class="alert alert-danger alert-dismissible fade show" role="alert" hidden>
                 <span id="errorString">Something went wrong with the API.</span>
@@ -34,8 +34,8 @@
             </div>
         </div>
         <section class="coverscreen">
-            <div class="row workarea">
-                <aside class="col-3 search-region">
+            <div class="row workarea mt-2">
+                <aside class="col-sm-4 col-md-3 col-lg-3 search-region">
                     <section class="search-history">
                         <h2 class="my-3 text-center">
                             Search for a City
@@ -47,26 +47,34 @@
                         <button id="searchcity" type="button" class="btn button-search-color">Search</button>
                         <hr />
                     </section>
-                    
+
                     <div id="cachedData" class="cachedcities">
                     </div>
                 </aside>
-                <aside class="col-9">
+                <aside class="col-sm-8 col-md-9 col-lg-9">
                     <div id="initialsection">
                         <div class="welcomemessage" style="margin:15px;">
                             <h3>Welcome to the Weather Dashboard</h3>
-                            <p>This application corresponds to Week #6 for the <strong>Carleton Coding Bootcamp</strong>. The purpose of this page to demonstrate our skills in our new career as Web Developer.</p>
-                            <p>How to use this tool? It is pretty simple!</p>                            
+                            <p>This application corresponds to Week #6 for the <strong>Carleton Coding
+                                    Bootcamp</strong>. The purpose of this page to demonstrate our skills in our new
+                                career as Web Developer.</p>
+                            <p>How to use this tool? It is pretty simple!</p>
                             <ol>
                                 <li>Enter a city in Canada or any other place in the world</li>
-                                <li>Using <strong>Bing Maps</strong> and <strong>Open Weather</strong> API application will retrieve information</li>
+                                <li>Using <strong>Bing Maps</strong> and <strong>Open Weather</strong> API
+                                    application
+                                    will retrieve information</li>
                                 <li>Application will parse the data returned in json format</li>
                                 <li>Current weather and 5 days forecast will be displayed</li>
                                 <li>Voila! you will <strong>NOT</strong> see this instructions again.</li>
                             </ol>
-                            <p>Enjoy the application and have a wonderful sunny day! Oops! better check the weather, you may need an umbrella!</p>
-                            <strong><p>Gustavo Miller</p></strong>
-                        </div>                        
+                            <p>Enjoy the application and have a wonderful sunny day! Oops! better check the weather,
+                                you
+                                may need an umbrella!</p>
+                            <strong>
+                                <p>Gustavo Miller</p>
+                            </strong>
+                        </div>
                     </div>
                     <div id="data-weather" hidden>
                         <section class="current-weather mb-3">
@@ -89,19 +97,18 @@
                         </section>
                         <section class="history-weather">
                             <article id="weatherCards" class="row">
-                                <div class="col-12 my-4">
-                                    <h2>
-                                        5-Day Forecast
-                                    </h2>
+                                <div id="forecastSection" class="col-12 my-4" hidden>
+                                    <h2>5-Day Forecast</h2>
                                 </div>
 
                                 <!-- This section is the template of the process. This section will be cloned and configured for each hour -->
-                                <div id="weatherTemplate" class="col-2" hidden>
+                                <div id="weatherTemplate" class="col-sm-6 col-md-4 col-lg-3 col-xl-2 mb-3" hidden>
                                     <div class="card forecast-cards">
                                         <div class="container">
                                             <h5 class="mb-2">test</h5>
                                             <i id="iconview" class="fas fa-sun text-warning mb-3"></i>
-                                            <div class="mt-3">Temp: <span id="tempFor" class="highlight"></span> </div>
+                                            <div class="mt-3">Temp: <span id="tempFor" class="highlight"></span>
+                                            </div>
                                             <div>Wind : <span id="windFor" class="highlight"></span> </div>
                                             <div>Humidity: <span id="humidFor" class="highlight"></span> </div>
                                         </div>
@@ -118,7 +125,7 @@
     </main>
 
     <!-- Footer-->
-    <footer class="py-3 bg-gradient footer">
+    <footer class="border-top footer text-muted d-none d-md-block">
         <p class="text-center text-white">
             Copyright &copy; Gustavo Miller 2023 v002
         </p>

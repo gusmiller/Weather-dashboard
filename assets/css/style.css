@@ -10,119 +10,142 @@
  */
 
 :root {
-	--wd-top-headings-height: 60px;
-	--wd-bottom-headings-height: 50px;
-	--wd-workarea-main-height: calc(100vh - var(--wd-top-headings-height) - var(--wd-bottom-headings-height));
+  --wd-top-headings-height: 60px;
+  --wd-bottom-headings-height: 50px;
+  --wd-workarea-main-height: calc(100vh - var(--wd-top-headings-height) - var(--wd-bottom-headings-height));
 
-	--searchbutton: #8bb9ff;
-	--searchbutton-hover: #0d6efd;
-	--cachedcity: #ae9ecc;
-	--cachedcity-hover: #835ec7;
-	--clouds-gray: #6c757d;
+  --searchbutton: #8bb9ff;
+  --searchbutton-hover: #0d6efd;
+  --cachedcity: #ae9ecc;
+  --cachedcity-hover: #835ec7;
+  --clouds-gray: #6c757d;
+}
+
+html {
+  position: relative;
+  min-height: 100%;
 }
 
 body {
-	font-family: "Open Sans", sans-serif;
-	font-size: 16px;
-}
-
-footer {
-	position: absolute;
-	bottom: 0;
-	width: 100%;
-	height: var(--wd-bottom-headings-height);
-	background-color: #333;
-	color: #fff;
+  font-family: "Open Sans", sans-serif;
+  font-size: 16px;
+  margin: 0;
+  height: 100%;
 }
 
 /* Define working areas */
 .topheader {
-	height: var(--wd-top-headings-height);
+  height: var(--wd-top-headings-height);
 }
 
 .coverscreen {
-	height: var(--wd-workarea-main-height);
+  height: var(--wd-workarea-main-height);
 }
 
 .workarea {
-	height: 100%;
-	margin: 2px solid #000;
+  height: 100%;
+  margin: 2px solid #000;
 }
 
 .search-region {
-	background-color: aliceblue;
+  background-color: aliceblue;
 }
 
 .search-history {
-	display: flex;
-	flex-direction: column;
-	padding: 10px;
+  display: flex;
+  flex-direction: column;
+  padding: 10px;
 }
 
 /* Weather section - current and history */
 .data-weather {
-	display: flex;
-	flex-direction: column;
-	padding: 10px;
+  display: flex;
+  flex-direction: column;
+  padding: 10px;
 }
 
 .current-weather {
-	height: 25%;
+  height: 25%;
 }
 
 #temperatureHeader,
 #windHeader,
 #humidityHeader {
-	color: #0d6efd;
+  color: #0d6efd;
 }
 
 .history-weather {
-	height: 75%;
+  height: 75%;
 }
 
 /* Weather template and cards */
 .col-2 {
-	width: 20% !important;
+  width: 20% !important;
 }
 
 .forecast-cards {
-	height: 250px;
-	padding: 15px;
-	color: white;
-	background-color: darkslateblue;
+  height: 250px;
+  padding: 15px;
+  color: white;
+  background-color: darkslateblue;
 }
 
 .forecast-cards:hover {
-	color: yellow;
-	background-color: rgb(36, 26, 99);
+  color: yellow;
+  background-color: rgb(36, 26, 99);
 }
 
 .button-search-color {
-	background-color: var(--searchbutton);
+  background-color: var(--searchbutton);
 }
 
 .button-search-color:hover {
-	background-color: var(--searchbutton-hover);
-	color: white;
+  background-color: var(--searchbutton-hover);
+  color: white;
 }
 
-.button-cached{
-	background-color: var(--cachedcity);
+.button-cached {
+  background-color: var(--cachedcity);
 }
 
-.button-cached:hover{
-	background-color: var(--cachedcity-hover);
-	color: white;
+.button-cached:hover {
+  background-color: var(--cachedcity-hover);
+  color: white;
 }
 
 .highlight {
-	font-weight: 600;
+  font-weight: 600;
 }
 
 .cachedcities {
-	display: flex;
-      flex-direction: column;
+  display: flex;
+  flex-direction: column;
 }
-.text-cloudy{
-	text: var(--clouds-gray);
+
+.text-cloudy {
+  color: var(--clouds-gray);
+}
+
+.content {
+  min-height: calc(100vh - 70px);
+  padding: 40px 40px 0 40px;
+}
+
+/* Footer definition and responsiveness*/
+footer {
+  /* position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: var(--wd-bottom-headings-height);
+  overflow: hidden; */
+  background-color: #333;
+  color: #fff;
+
+}
+
+@media screen and (max-width: 768px) {
+  footer {
+    font-size: 14px;
+  }
 }

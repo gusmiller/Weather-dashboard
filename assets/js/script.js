@@ -7,7 +7,7 @@
 
 /**
  * Main jQuery entry call. Wrapped after the page load process has been completed and document can be manipulated safely.
- * It contains all functions available.
+ * It contains all functions available. These are my public keys for Bing and Open weather
  */
 $(document).ready(function () {
 	const openWeatherAPI = "bbc3d2f0a62f5953d89a98a20be48141";
@@ -52,35 +52,42 @@ $(document).ready(function () {
 		// Make an HTTP GET fetch request to the API
 		// https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API/Using_Fetch
 		fetch(geocodingEndpoint)
-			.then(function (response) {
-				return response.json();
-			})
+			.then(response => response.json())
 			.then((data) => {
 				// Extract the coordinates from the response
 				const firstLocation = data.resourceSets[0].resources[0];
 				latitude = firstLocation.point.coordinates[0];
 				longitude = firstLocation.point.coordinates[1];
 
-				retrieveCurrentWeather(); // call the current weather information
+				retrieveCurrentWeather();
 				retrieveForecastWeather(); // Call the forecast weather	
+
 			})
 			.catch((error) => {
 
 				$("#searchWeather").val(""); // Clear city entered
-				displayErrorMessage(error, "Virtual Earth"); // Display error message
+				$("#data-weather").attr("hidden");
+				displayErrorMessage(error, "Bing Virtual Earth"); // Display error message
 				return false;
 			});
 	}
 
 	/**
 	 * This function will retrieve the current weather in the city selected. We could get 
-	 * the information from the list as well.
+	 * the information from the list as well. Change the url to api.openweathermap.bad.org to break
+	 * the code.
 	 */
 	function retrieveCurrentWeather() {
-		const currentWeather = `https://api.openweathermap.org/data/2.5/weather?lat=${latitude}&lon=${longitude}&units=metric&appid=${openWeatherAPI}`;
+		var currentWeather = `https://api.openweathermap.org/data/2.5/weather?lat=${latitude}&lon=${longitude}&units=metric&appid=${openWeatherAPI}`;
 
 		fetch(currentWeather)
-			.then(response => response.json())
+			.then(response => {
+				if (!response.ok) {
+					displayErrorMessage("Open Weather Map", "Current Weather"); // Display error message
+					return false; // Failed process
+				}
+				return response.json(); // Parse JSON response
+			})
 			.then(data => {
 
 				// Format date to a simple and short date.
@@ -99,7 +106,7 @@ $(document).ready(function () {
 				changeWeatherIcon(data.weather[0], iconchange);
 
 				cityId = data.id;
-
+				return true; // Process completed
 			})
 			.catch(error => {
 				$("#searchWeather").val(""); // Clear city entered
@@ -110,7 +117,8 @@ $(document).ready(function () {
 
 	/**
 	 * This function will retrieve the coordinates for the selected city using Bing Virtual Earth API for 
-	 * Developers. If the process is correct then It will return the coordinates (latitude/longitude)
+	 * Developers. If the process is correct then It will return the coordinates (latitude/longitude).
+	 * Change the url to api.openweathermap.bad.org to break the code.
 	 */
 	function retrieveForecastWeather() {
 		const forecastWeather = `https://api.openweathermap.org/data/2.5/forecast?lat=${latitude}&lon=${longitude}&units=metric&appid=${openWeatherAPI}`;
@@ -119,10 +127,18 @@ $(document).ready(function () {
 		var countForecast = 0;
 
 		fetch(forecastWeather)
-			.then(response => response.json())
+			.then(response => {
+				if (!response.ok) {
+					displayErrorMessage("Open Weather Map (Forecast)", "Retrieving Forecast Weather"); // Display error message
+					return false; // Failed process
+				}
+				return response.json(); // Parse JSON response
+			})
 			.then(data => {
 				// Retrieve the forecast list into an array. 
 				const forecasts = data.list;
+
+				$("#forecastSection").removeAttr("hidden");
 
 				// Ref:JQuery - method is designed to make DOM looping constructs concise and less error-prone
 				// https://api.jquery.com/each/
@@ -172,11 +188,13 @@ $(document).ready(function () {
 				// https://developer.mozilla.org/en-US/docs/Web/API/Element/remove
 				$("#weatherTemplate").remove();
 
+				return true; // Process completed
+
 			})
 			.catch(error => {
 				$("#searchWeather").val(""); // Clear city entered
 				displayErrorMessage(error, "Open Weather Map (Forecast)"); // Display error message
-				return false;
+				return false; // Failed process
 			});
 	}
 
@@ -439,6 +457,21 @@ $(document).ready(function () {
 		});
 	}
 
+	// This function will clear the working are while typing the working area
+	function clearWorkarea() {
+
+		// The forecast is built dynamically. Validate whether there are already forecast cards in the forecast section
+		if ($("#weatherCards").children().length > 2) {
+			$(".forecast").remove();
+		}
+
+		$("#forecastSection").attr("hidden", true);
+		$("#cityCurrentWeather").text("City here");
+		$("#temperatureHeader").text("");
+		$("#windHeader").text("");
+		$("#humidityHeader").text("");
+	}
+
 	/**
 	 * Initialize the page time-block elements, set their color and availability based in the time. We need t
 	 * build the HTML from scratch using text strings. I had in mind to CLONE a template row and add it but
@@ -455,6 +488,9 @@ $(document).ready(function () {
 		// Assign an event to ALL buttons added dynamically into the DOM. These buttons originally
 		// will NOT be there. To reset the array use the inspect to delete the LocalStorage
 		$(".button-cached").on("click", retrieveCachedWeather);
+
+		// Assign an event to Search Weather input box to clear the working area
+		$("#searchWeather").on("keyup", clearWorkarea)
 	}
 
 	init();
