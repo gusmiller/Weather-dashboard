@@ -23,17 +23,20 @@
 # Carleton University - Bootcamp
 
 ## Challenge 6: Weather Dashboard
+Using third-party APIs to access their data and functionality by making requests with specific parameters to a URL should be something that a developer should know. We are often tasked with retrieving data from another application's API and using it in the context of their own. My challenge in this exercise was to build a weather dashboard that will run in the browser and feature dynamically updated HTML and CSS.
 
-[![Weather Dashboard][product-screenshot]](https://example.com)
+Here is my product!
+
+[![Weather Dashboard][product-screenshot]](https://gusmiller.github.io/Weather-dashboard/)
 
 <!-- ABOUT THE PROJECT -->
 ## About The Project
 
-The Weather Dashboard was developed using JavaScript, JQuery and API. There are two APIs used in this application:
+This was a very challenging task, and not just because I had to come up with a responsive interface but because the usage of two API. API are not asynchronous therefore the code does not wait. We are working on a promise that he API offers. It was challenging but I got it working. The Weather Dashboard was developed using JavaScript, JQuery and API. There are two APIs used in this application:
 * api.openweathermap - this API provides hyperlocal forecast, historical data, current state, and from short-term to annual and forecasted weather data. Read more about [Opem Weather Map](https://openweathermap.org/)
 * dev.virtualearth.net - The Bing Maps APIs include map controls and services that you can use to incorporate Bing Maps in applications and websites. Read more about [Bing Maps](https://www.microsoft.com/en-us/maps/bing-maps/choose-your-bing-maps-api)
 
-Using these two API as well as JQuery we have build this page. This page uses LocalStorage to persist information.
+With the combinatio of these two API's and the use of JQuery, we have build this page. This page uses LocalStorage to persist information.
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -52,11 +55,16 @@ Here are a few examples.
 <!-- GETTING STARTED -->
 ## How it works
 
-The concept is simple. When application is loaded for the first time, the application will add some cities by default such as Toronto, Montreal, Vancouver and other (with no preference).
+The concept is simple. When application is loaded for the first time, the application will add some cities by default such as Toronto, Montreal, Vancouver and other (with no preference). The page will be empty therefore it displays a welcome page to guide the user, this page will not show up once user selects a valid city.
+
+[![Weather Dashboard - First Time][weatherFirstTime]]
 
 User will enter a city (any city in Canada or anywhere else in the world) and the API will retrieve the current weather and a 5 days forecast.
 
 Information is then saved in the computer Local Storage and keep a list. The application has a limitation of showing only 8 cities stored in the archive. Perhaps in future version user will be able to scan all cites visited.
+
+When user enters information that is not valid (unknown city) or API fails the application will display the following screen. User will be able to close the error message
+[![Weather Dashboard - Error][weatherError]]
 
 ### API Key
 
@@ -95,6 +103,9 @@ Project Link: [https://gusmiller.github.io/work_day_scheduler/](https://gusmille
 
 <!-- MARKDOWN LINKS & IMAGES -->
 [product-screenshot]: ./assets/images/weather001.png
+[weatherFirstTime]: ./assets/images/weather002.png
+[weatherError]: ./assets/images/weather003.png
+
 [Bootstrap.com]: https://img.shields.io/badge/Bootstrap-563D7C?style=for-the-badge&logo=bootstrap&logoColor=white
 [Bootstrap-url]: https://getbootstrap.com
 [JQuery.com]: https://img.shields.io/badge/jQuery-0769AD?style=for-the-badge&logo=jquery&logoColor=white
