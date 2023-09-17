@@ -133,14 +133,15 @@ body {
 
 /* Footer definition and responsiveness*/
 footer {
-  position: absolute;
-  bottom: 0;
+  position: fixed;
   left: 0;
+  bottom: 0;
   width: 100%;
   height: var(--wd-bottom-headings-height);
-  overflow: hidden;
   background-color: #333;
-  color: #fff;
+  color: white;
+  text-align: center;
+  overflow: hidden;
 }
 
 @media screen and (max-width: 768px) {
