@@ -12,6 +12,7 @@
 $(document).ready(function () {
 	const openWeatherAPI = "bbc3d2f0a62f5953d89a98a20be48141";
 	const bingApi = "AiWJmhnxfhdTKeo19xy2NrVRNuGJlN9DiTfsDFV0AbdyHZHjWLv8ru9SloAmYPbk";
+	const aviationAPI = "bc62d3c507d8b552c56639324618f98b";
 
 	var errorBlock = $("#errorBar").clone(); // Clone the error dismissable alert
 	var newForecastBlock = $("#weatherTemplate").clone(); // Initial mechanism to create DOM - not successful
@@ -25,6 +26,25 @@ $(document).ready(function () {
 	var selectedCity = "";
 	var min = 1;
 	var max = 100;
+
+	function testingAPI(){
+		// We are using template literals to build strings (backtick + ${variable}
+		// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Template_literals
+		const geocodingEndpoint = `https://api.aviationstack.com/v1/flights?access_key=${aviationAPI}`;
+
+		// Make an HTTP GET fetch request to the API
+		// https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API/Using_Fetch
+		fetch(geocodingEndpoint)
+			.then(response => response.json())
+			.then((data) => {
+				console.log(data);
+			})
+			.catch((error) => {
+
+				displayErrorMessage(error, "Aviation Stack"); // Display error message
+				return false;
+			});
+	}
 
 	/**
 	 * This function will connect to the API, request information and process if everything is ok.
@@ -94,9 +114,9 @@ $(document).ready(function () {
 				// https://day.js.org/docs/en/display/format
 				$("#cityCurrentWeather").text(selectedCity + " (" + dayjs().format("DD/MM/YYYY") + ")");
 
-				$("#temperatureHeader").text(data.main.temp);
-				$("#windHeader").text(data.wind.speed);
-				$("#humidityHeader").text(data.main.humidity);
+				$("#temperatureHeader").text(data.main.temp + " ℃");
+				$("#windHeader").text(data.wind.speed + "m/h");
+				$("#humidityHeader").text(data.main.humidity + "%");
 
 				// Instantiate an instance of the weather icon; this icon has to change dynamically 
 				// depending on the weather conditions
@@ -162,9 +182,9 @@ $(document).ready(function () {
 						newForecastBlock.attr("id", "forecast" + randomNum); // Change id to unique
 						newForecastBlock.addClass("forecast");
 						newForecastBlock.find(".mb-2").text(currentDate);
-						newForecastBlock.find("#tempFor").text(forecast.main.temp);
-						newForecastBlock.find("#windFor").text(forecast.wind.speed);
-						newForecastBlock.find("#humidFor").text(forecast.main.humidity);
+						newForecastBlock.find("#tempFor").text(forecast.main.temp + " ℃");
+						newForecastBlock.find("#windFor").text(forecast.wind.speed + "m/h");
+						newForecastBlock.find("#humidFor").text(forecast.main.humidity + "%");
 
 						// Instantiate an instance of the weather icon; this icon has to change dynamically 
 						// depending on the weather conditions
@@ -491,6 +511,8 @@ $(document).ready(function () {
 
 		// Assign an event to Search Weather input box to clear the working area
 		$("#searchWeather").on("keyup", clearWorkarea)
+
+		testingAPI();
 	}
 
 	init();
