@@ -150,3 +150,29 @@ footer {
     font-size: 14px;
   }
 }
+
+/* Tailwind CSS */
+.listbutton{
+  --text-opacity: 1;
+
+  padding-left: 0.25rem;
+  padding-right: 0.25rem;
+  padding-top: 0.25rem;
+	padding-bottom: 0.25rem;
+  border-width: 1px;
+  border-radius: 0.25rem;
+	
+	color: #4299e1;
+	color: rgba(66, 153, 225, var(--text-opacity));
+  transition-duration: 0.3s;
+
+	border-color: #4299e1;
+	border-color: rgba(66, 153, 225, var(--border-opacity));
+
+}
+.listbutton:hover{
+  --bg-opacity: 1;
+	background-color: #2b6cb0;
+	background-color: rgba(43, 108, 176, var(--bg-opacity));
+  color: white;
+}

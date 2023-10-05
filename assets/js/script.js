@@ -5,6 +5,10 @@
  * Assignment - 06 Weather Dashboard
  */
 
+window.onload = function () { window.frameElement.height = document.body.scrollHeight + 'px' };
+document.onload = function () { window.frameElement.height = document.body.scrollHeight + 'px' };
+
+
 /**
  * Main jQuery entry call. Wrapped after the page load process has been completed and document can be manipulated safely.
  * It contains all functions available. These are my public keys for Bing and Open weather
@@ -27,10 +31,12 @@ $(document).ready(function () {
 	var min = 1;
 	var max = 100;
 
-	function testingAPI(){
+	function testingAPI() {
 		// We are using template literals to build strings (backtick + ${variable}
 		// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Template_literals
 		const geocodingEndpoint = `https://api.aviationstack.com/v1/flights?access_key=${aviationAPI}`;
+
+		console.log(geocodingEndpoint);
 
 		// Make an HTTP GET fetch request to the API
 		// https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API/Using_Fetch
@@ -142,7 +148,7 @@ $(document).ready(function () {
 	 */
 	function retrieveForecastWeather() {
 		const forecastWeather = `https://api.openweathermap.org/data/2.5/forecast?lat=${latitude}&lon=${longitude}&units=metric&appid=${openWeatherAPI}`;
-
+		
 		var currentDate = dayjs().format("DD/MM/YYYY");
 		var countForecast = 0;
 
@@ -512,7 +518,7 @@ $(document).ready(function () {
 		// Assign an event to Search Weather input box to clear the working area
 		$("#searchWeather").on("keyup", clearWorkarea)
 
-		testingAPI();
+		//testingAPI(); //
 	}
 
 	init();
